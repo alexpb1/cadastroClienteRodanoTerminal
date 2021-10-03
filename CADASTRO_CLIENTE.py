@@ -1,5 +1,6 @@
 import sqlite3
 import os
+from sqlite3.dbapi2 import Error
 lista=[]
 encontrado=[]
 n1=n2=0
@@ -109,8 +110,9 @@ def buscar_cliente():
     if buscar!="":
         for line in lista:  
             for coluna in line:
-                if coluna==buscar:
-                    encontrado.append(lista[n2])
+                if buscar in str(coluna):
+                    if lista[n2] not in encontrado:
+                        encontrado.append(lista[n2])
                 if n1<len(lista[0]):
                     n1+=1
                 if n1==len(lista[0]):
@@ -134,8 +136,8 @@ def exibir_busca():
         for pessoa in encontrado:
             print (contador, ' - ',pessoa)
             contador+=1
-        cliente_select=int(input('\nDigite o número referente a um cliente: '))-1
-        if cliente_select >= 0 and cliente_select<len(encontrado):
+        try:
+            cliente_select=int(input('\nDigite o número referente a um cliente ou M para voltar ao Menu: '))-1
             cliente_selecionado=encontrado[cliente_select][0]
             cabecario()
             print('\033[31m','Nome: ', encontrado[cliente_select][1])
@@ -143,7 +145,10 @@ def exibir_busca():
             print('\n Telefone: ', encontrado[cliente_select][3])
             print('\n Email: ', encontrado[cliente_select][4])
             print('\033[34m')
-        
+        except:
+            os.system('cls')
+            menu()
+             
     if len(encontrado) ==0:
         print('\033[31m','\n NENHUM CLIENTE LOCALIZADO.')
         print('\033[34m')
